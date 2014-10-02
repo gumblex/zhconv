@@ -21,8 +21,10 @@ Support MediaWiki's convertion format:
     张国荣曾在英国利兹大学学习。
 
 """
+import os
 import sys
 import json
+from functools import wraps
 
 locales = {
     'zh-cn': ('zh-cn', 'zh-hans', 'zh'),
@@ -35,14 +37,40 @@ locales = {
     'zh-hans': ('zh-hans', 'zh-cn', 'zh-sg', 'zh')
 }
 
-with open('zhcdict.json', 'r') as f:
-    zhcdicts = json.load(f)
+DICTIONARY = "zhcdict.json"
 
+zhcdicts = None
 dict_zhcn = None
 dict_zhsg = None
 dict_zhtw = None
 dict_zhhk = None
 
+def require_initialized(fn):
+    """
+    Ensure the dict is loaded.
+    Copied from Jieba.
+    """
+    @wraps(fn)
+    def wrapped(*args, **kwargs):
+        global zhcdicts
+        if zhcdicts:
+            return fn(*args, **kwargs)
+        else:
+            loaddict(DICTIONARY)
+            return fn(*args, **kwargs)
+
+    return wrapped
+
+def loaddict(filename='zhcdict.json'):
+    global zhcdicts
+    if zhcdicts:
+        return
+    _curpath=os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    abs_path = os.path.join(_curpath, filename)
+    with open(abs_path, 'r') as f:
+        zhcdicts = json.load(f)
+
+@require_initialized
 def getdict(locale):
     """
     Generate or get convertion dict cache for certain locale.
@@ -81,6 +109,7 @@ def getdict(locale):
             dict_zhhk.update(zhcdicts['zh2HK'])
             return dict_zhhk
 
+@require_initialized
 def convert(s, locale):
     """
     Main convert function.
@@ -116,7 +145,7 @@ def convert(s, locale):
         pos += flen + 1
     return ''.join(ch)
 
-
+@require_initialized
 def convert_for_mw(s, locale):
     """
     Recognizes MediaWiki's human conversion format.
@@ -182,7 +211,6 @@ def convert_for_mw(s, locale):
         pos += flen + 1
     return ''.join(ch)
 
-
 def main():
     """
     Simple stdin/stdout interface.
@@ -190,6 +218,7 @@ def main():
     if len(sys.argv) < 2:
         print("usage: %s {zh-cn|zh-tw|zh-hk|zh-sg|zh-hans|zh-hant}" % __file__)
         sys.exit()
+    loaddict()
     ln = sys.stdin.readline()
     while ln:
         l = ln.rstrip('\r\n')
