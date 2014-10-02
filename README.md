@@ -27,4 +27,5 @@
 
 转换字典可下载 includes/ZhConversion.php，使用 convmwdict.py 可转换成 json 格式。
 
-授权协议采用 MIT 协议，除从 MediaWiki 复制过来的 ZhConversion.php 采用 GPL v2。
+授权协议采用 MIT 协议。
+
