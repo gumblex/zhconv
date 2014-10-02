@@ -7,7 +7,7 @@
 
 [OpenCC](https://github.com/BYVoid/OpenCC) 和 [opencc-python](https://pypi.python.org/pypi/opencc-python) 是一个比较完整准确的解决方案，但不适合纯 Python 环境和对精确度要求不高的需要。
 
-```python
+```pycon
 >>> print(convert(u'我幹什麼不干你事。', 'zh-cn'))
 我干什么不干你事。
 >>> print(convert(u'人体内存在很多微生物', 'zh-tw'))
@@ -16,7 +16,7 @@
 
 支持 MediaWiki 人工转换语法：
 
-```python
+```pycon
 >>> print(convert_for_mw(u'在现代，机械计算-{}-机的应用已经完全被电子计算-{}-机所取代', 'zh-hk'))
 在現代，機械計算機的應用已經完全被電子計算機所取代
 >>> print(convert_for_mw(u'-{zh-hant:資訊工程;zh-hans:计算机工程学;}-是电子工程的一个分支，主要研究计算机软硬件和二者间的彼此联系。', 'zh-tw'))
