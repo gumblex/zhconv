@@ -14,7 +14,7 @@
 人體內存在很多微生物
 ```
 
-支持 MediaWiki 人工转换语法：
+完整支持 MediaWiki 人工转换语法：
 
 ```pycon
 >>> print(convert_for_mw(u'在现代，机械计算-{}-机的应用已经完全被电子计算-{}-机所取代', 'zh-hk'))
@@ -25,7 +25,9 @@
 张国荣曾在英国利兹大学学习。
 ```
 
-转换字典可下载 includes/ZhConversion.php，使用 convmwdict.py 可转换成 json 格式。
+和其他[高级字词转换语法](https://zh.wikipedia.org/wiki/Help:%E9%AB%98%E7%BA%A7%E5%AD%97%E8%AF%8D%E8%BD%AC%E6%8D%A2%E8%AF%AD%E6%B3%95)。
+
+转换字典可下载 [MediaWiki 源码包](https://www.mediawiki.org/wiki/Download)中的 includes/ZhConversion.php，使用 convmwdict.py 可转换成 json 格式。
 
 授权协议采用 MIT 协议。
 

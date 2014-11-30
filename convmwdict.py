@@ -28,8 +28,10 @@ def main():
         phpfile = f.read()
     if sys.version_info[0] < 3:
         phpfile = unicode(phpfile, 'utf-8')
-    with open('zhcdict.json', 'w') as f:
-        json.dump(convert(phpfile), f)
+    je = json.JSONEncoder(ensure_ascii=False, indent=0, separators=(',', ': '), sort_keys=True)
+    with open('zhcdict.json', 'wb') as f:
+        for chunk in je.iterencode(convert(phpfile)):
+            f.write(chunk.encode('utf-8'))
 
 if __name__ == '__main__':
     main()
