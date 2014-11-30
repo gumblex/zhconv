@@ -6,21 +6,23 @@ It doesn't contains a segmentation function and uses maximal forward matching, s
 For a complete and accurate solution, see OpenCC.
 For Chinese segmentation, see Jieba.
 
-    >>> print(convert(u'我幹什麼不干你事。', 'zh-cn'))
+    >>> print(convert('我幹什麼不干你事。', 'zh-cn'))
     我干什么不干你事。
-    >>> print(convert(u'人体内存在很多微生物', 'zh-tw'))
+    >>> print(convert('人体内存在很多微生物', 'zh-tw'))
     人體內存在很多微生物
 
 Support MediaWiki's convertion format:
 
-    >>> print(convert_for_mw(u'在现代，机械计算-{}-机的应用已经完全被电子计算-{}-机所取代', 'zh-hk'))
+    >>> print(convert_for_mw('在现代，机械计算-{}-机的应用已经完全被电子计算-{}-机所取代', 'zh-hk'))
     在現代，機械計算機的應用已經完全被電子計算機所取代
-    >>> print(convert_for_mw(u'-{zh-hant:資訊工程;zh-hans:计算机工程学;}-是电子工程的一个分支，主要研究计算机软硬件和二者间的彼此联系。', 'zh-tw'))
+    >>> print(convert_for_mw('-{zh-hant:資訊工程;zh-hans:计算机工程学;}-是电子工程的一个分支，主要研究计算机软硬件和二者间的彼此联系。', 'zh-tw'))
     資訊工程是電子工程的一個分支，主要研究計算機軟硬體和二者間的彼此聯繫。
-    >>> print(convert_for_mw(u'張國榮曾在英國-{zh:利兹;zh-hans:利兹;zh-hk:列斯;zh-tw:里茲}-大学學習。', 'zh-sg'))
+    >>> print(convert_for_mw('張國榮曾在英國-{zh:利兹;zh-hans:利兹;zh-hk:列斯;zh-tw:里茲}-大学學習。', 'zh-sg'))
     张国荣曾在英国利兹大学学习。
 
 """
+# Only Python3 can pass the doctest here due to unicode problems.
+
 import os
 import sys
 import re
@@ -71,24 +73,13 @@ def getdict(locale):
     global zhcdicts, dict_zhcn, dict_zhsg, dict_zhtw, dict_zhhk, pfsdict
     if zhcdicts is None:
         loaddict(DICTIONARY)
-    if locale == 'zh-hans':
-        got = zhcdicts['zh2Hans']
-    elif locale == 'zh-hant':
-        got = zhcdicts['zh2Hant']
-    elif locale == 'zh-cn':
+    if locale == 'zh-cn':
         if dict_zhcn:
             got = dict_zhcn
         else:
             dict_zhcn = zhcdicts['zh2Hans'].copy()
             dict_zhcn.update(zhcdicts['zh2CN'])
             got = dict_zhcn
-    elif locale in ('zh-sg', 'zh-my'):
-        if dict_zhsg:
-            got = dict_zhsg
-        else:
-            dict_zhsg = zhcdicts['zh2Hans'].copy()
-            dict_zhsg.update(zhcdicts['zh2SG'])
-            got = dict_zhsg
     elif locale == 'zh-tw':
         if dict_zhtw:
             got = dict_zhtw
@@ -96,13 +87,24 @@ def getdict(locale):
             dict_zhtw = zhcdicts['zh2Hant'].copy()
             dict_zhtw.update(zhcdicts['zh2TW'])
             got = dict_zhtw
-    elif locale in ('zh-hk', 'zh-mo'):
+    elif locale == 'zh-hk' or locale == 'zh-mo':
         if dict_zhhk:
             got = dict_zhhk
         else:
             dict_zhhk = zhcdicts['zh2Hant'].copy()
             dict_zhhk.update(zhcdicts['zh2HK'])
             got = dict_zhhk
+    elif locale == 'zh-sg' or locale == 'zh-my':
+        if dict_zhsg:
+            got = dict_zhsg
+        else:
+            dict_zhsg = zhcdicts['zh2Hans'].copy()
+            dict_zhsg.update(zhcdicts['zh2SG'])
+            got = dict_zhsg
+    elif locale == 'zh-hans':
+        got = zhcdicts['zh2Hans']
+    elif locale == 'zh-hant':
+        got = zhcdicts['zh2Hant']
     else:
         got = {}
     if locale not in pfsdict:
@@ -110,24 +112,23 @@ def getdict(locale):
     return got
 
 def getpfset(convdict):
-    pfset = set()
+    pfset = []
     for word in convdict:
         for ch in range(len(word)):
-            pfset.add(word[:ch+1])
+            pfset.append(word[:ch+1])
     return frozenset(pfset)
 
 def fallback(locale, mapping):
-    if locale in Locales:
-        for l in Locales[locale]:
-            if l in mapping:
-                return mapping[l]
+    for l in Locales[locale]:
+        if l in mapping:
+            return mapping[l]
     return convert(tuple(mapping.values())[0], locale)
 
 def convtable2dict(convtable, locale, update=None):
     """
     Convert a list of conversion dict to a dict for a certain locale.
     
-    >>> sorted(convtable2dict([{'zh-hk': u'列斯', 'zh-hans': u'利兹', 'zh': u'利兹', 'zh-tw': u'里茲'}, {':uni': u'巨集', 'zh-cn': u'宏'}], 'zh-cn').items())
+    >>> sorted(convtable2dict([{'zh-hk': '列斯', 'zh-hans': '利兹', 'zh': '利兹', 'zh-tw': '里茲'}, {':uni': '巨集', 'zh-cn': '宏'}], 'zh-cn').items())
     [('列斯', '利兹'), ('利兹', '利兹'), ('巨集', '宏'), ('里茲', '利兹')]
     """
     rdict = update.copy() if update else {}
@@ -135,6 +136,10 @@ def convtable2dict(convtable, locale, update=None):
         if ':uni' in r:
             if locale in r:
                 rdict[r[':uni']] = r[locale]
+        elif locale[:-1] == 'zh-han':
+            if locale in r:
+                for word in r.values():
+                    rdict[word] = r[locale]
         else:
             v = fallback(locale, r)
             for word in r.values():
@@ -186,26 +191,28 @@ def convert(s, locale, update=None):
     `update` is a dict which updates the conversion table,
              eg. {'from1': 'to1', 'from2': 'to2'}
 
-    >>> print(convert(u'我幹什麼不干你事。', 'zh-cn'))
+    >>> print(convert('我幹什麼不干你事。', 'zh-cn'))
     我干什么不干你事。
-    >>> print(convert(u'我幹什麼不干你事。', 'zh-cn', {u'不干': u'不幹'}))
+    >>> print(convert('我幹什麼不干你事。', 'zh-cn', {'不干': '不幹'}))
     我干什么不幹你事。
-    >>> print(convert(u'人体内存在很多微生物', 'zh-tw'))
+    >>> print(convert('人体内存在很多微生物', 'zh-tw'))
     人體內存在很多微生物
     """
     if locale == 'zh' or locale not in Locales:
+        # "no conversion"
         return s
     zhdict = getdict(locale)
     pfset = pfsdict[locale]
+    newset = set()
     if update:
         # TODO: some sort of caching
-        zhdict = zhdict.copy()
-        zhdict.update(update)
+        #zhdict = zhdict.copy()
+        #zhdict.update(update)
         newset = set()
         for word in update:
             for ch in range(len(word)):
                 newset.add(word[:ch+1])
-        pfset = pfset | newset
+        #pfset = pfset | newset
     ch = []
     N = len(s)
     pos = 0
@@ -214,8 +221,11 @@ def convert(s, locale, update=None):
         frag = s[pos]
         maxword = None
         maxpos = 0
-        while i < N and frag in pfset:
-            if frag in zhdict:
+        while i < N and (frag in pfset or frag in newset):
+            if update and frag in update:
+                maxword = update[frag]
+                maxpos = i
+            elif frag in zhdict:
                 maxword = zhdict[frag]
                 maxpos = i
             i += 1
@@ -237,13 +247,13 @@ def convert_for_mw(s, locale, update=None):
     https://zh.wikipedia.org/wiki/Help:%E9%AB%98%E7%BA%A7%E5%AD%97%E8%AF%8D%E8%BD%AC%E6%8D%A2%E8%AF%AD%E6%B3%95
     https://www.mediawiki.org/wiki/Writing_systems/Syntax
 
-    >>> print(convert_for_mw(u'在现代，机械计算-{}-机的应用已经完全被电子计算-{}-机所取代', 'zh-hk'))
+    >>> print(convert_for_mw('在现代，机械计算-{}-机的应用已经完全被电子计算-{}-机所取代', 'zh-hk'))
     在現代，機械計算機的應用已經完全被電子計算機所取代
-    >>> print(convert_for_mw(u'-{zh-hant:資訊工程;zh-hans:计算机工程学;}-是电子工程的一个分支，主要研究计算机软硬件和二者间的彼此联系。', 'zh-tw'))
+    >>> print(convert_for_mw('-{zh-hant:資訊工程;zh-hans:计算机工程学;}-是电子工程的一个分支，主要研究计算机软硬件和二者间的彼此联系。', 'zh-tw'))
     資訊工程是電子工程的一個分支，主要研究計算機軟硬體和二者間的彼此聯繫。
-    >>> print(convert_for_mw(u'張國榮曾在英國-{zh:利兹;zh-hans:利兹;zh-hk:列斯;zh-tw:里茲}-大学學習。', 'zh-hant'))
+    >>> print(convert_for_mw('張國榮曾在英國-{zh:利兹;zh-hans:利兹;zh-hk:列斯;zh-tw:里茲}-大学學習。', 'zh-hant'))
     張國榮曾在英國里茲大學學習。
-    >>> print(convert_for_mw(u'張國榮曾在英國-{zh:利兹;zh-hans:利兹;zh-hk:列斯;zh-tw:里茲}-大学學習。', 'zh-sg'))
+    >>> print(convert_for_mw('張國榮曾在英國-{zh:利兹;zh-hans:利兹;zh-hk:列斯;zh-tw:里茲}-大学學習。', 'zh-sg'))
     张国荣曾在英国利兹大学学习。
     """
     zhdict = getdict(locale)
@@ -333,6 +343,28 @@ def convert_for_mw(s, locale, update=None):
             ch.append(convert(frag, locale, ruledict))
     return ''.join(ch)
 
+def _mwtest(locale, update=None):
+    s = ('英國-{zh:利兹;zh-hans:利兹;zh-hk:列斯;zh-tw:里茲}-大学\n'
+        '-{zh-hans:计算机; zh-hant:電腦;}-\n'
+        '-{H|巨集=>zh-cn:宏;}-\n'
+        '测试：巨集、宏\n'
+        '-{简体字繁體字}-\n'
+        '北-{}-韓、北朝-{}-鲜\n'
+        '-{H|zh-cn:博客; zh-hk:網誌; zh-tw:部落格;}-\n'
+        '测试：博客、網誌、部落格\n'
+        '-{A|zh-cn:博客; zh-hk:網誌; zh-tw:部落格;}-\n'
+        '测试：博客、網誌、部落格\n'
+        '-{H|zh-cn:博客; zh-hk:網誌; zh-tw:部落格;}-\n'
+        '测试1：博客、網誌、部落格\n'
+        '-{-|zh-cn:博客; zh-hk:網誌; zh-tw:部落格;}-\n'
+        '测试2：博客、網誌、部落格\n'
+        '-{T|zh-cn:汤姆·汉克斯; zh-hk:湯·漢斯; zh-tw:湯姆·漢克斯;}-\n'
+        '-{D|zh-cn:汤姆·汉克斯; zh-hk:湯·漢斯; zh-tw:湯姆·漢克斯;}-\n'
+        '-{H|zh-cn:博客; zh-hk:網誌; zh-tw:部落格;}-\n'
+        '测试1：-{zh;zh-hans;zh-hant|博客、網誌、部落格}-\n'
+        '测试2：-{zh;zh-cn;zh-hk|博客、網誌、部落格}-')
+    return convert_for_mw(s, locale, update)
+
 def main():
     """
     Simple stdin/stdout interface.
@@ -355,7 +387,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    # Test code:
-    #import timeit
-    #a=lambda :(convert_for_mw(u'-{zh-hans:computer; zh-hant:ELECTRONICBRAIN;}-dsfsdf-{}-sdfsdfs-{asd}--{A|zh-cn:博客; zh-hk:網誌; zh-tw:部落格;}-测试1：博客、網誌、部落格--{H|zh-cn:博客; zh-hk:網誌; zh-tw:部落格;}- 测试1：-{zh;zh-hans;zh-hant|博客、網誌、部落格}-测试2：-{zh;zh-cn;zh-hk|博客、網誌、部落格}--{简体字繁體 字}-北-{}-韓、北朝-{}-鲜-{A|極集1=>zh-cn:宏;}-测试：極集1、宏', 'zh-hk'))
-    #timeit.repeat(a, number=10)
