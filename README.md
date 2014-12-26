@@ -29,5 +29,7 @@
 
 转换字典可下载 [MediaWiki 源码包](https://www.mediawiki.org/wiki/Download)中的 includes/ZhConversion.php，使用 convmwdict.py 可转换成 json 格式。
 
+__注意__：`zhcdict.json` 中的词汇表是人工校对的，重新生成会略有不同，使用自带的即可。
+
 授权协议采用 MIT 协议。
 

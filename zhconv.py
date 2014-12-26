@@ -22,7 +22,7 @@ Support MediaWiki's convertion format:
 
 """
 # Only Python3 can pass the doctest here due to unicode problems.
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 
 import os
 import sys
@@ -50,7 +50,6 @@ dict_zhcn = None
 dict_zhsg = None
 dict_zhtw = None
 dict_zhhk = None
-char_diff = None
 pfsdict = {}
 
 RE_langconv = re.compile(r'(-\{.*?\}-)')
@@ -67,14 +66,8 @@ def loaddict(filename=DICTIONARY):
     abs_path = os.path.join(_curpath, filename)
     with open(abs_path, 'r') as f:
         zhcdicts = json.load(f)
-
-def loadchardiff(filename=CHARDIFF):
-    global char_diff
-    if char_diff:
-        return
-    _curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-    abs_path = os.path.join(_curpath, filename)
-    char_diff = tuple(map(frozenset, open(abs_path, 'rb').read().decode('utf-8').rstrip().split('\n')))
+    zhcdicts['SIMPONLY'] = frozenset(zhcdicts['SIMPONLY'])
+    zhcdicts['TRADONLY'] = frozenset(zhcdicts['TRADONLY'])
 
 def getdict(locale):
     """
@@ -139,12 +132,12 @@ def issimp(s):
 
     `s` must be unicode (Python 2) or str (Python 3), or you'll get None.
     """
-    if char_diff is None:
-        loadchardiff(CHARDIFF)
+    if zhcdicts is None:
+        loaddict(DICTIONARY)
     for ch in s:
-        if ch in char_diff[0]:
+        if ch in zhcdicts['SIMPONLY']:
             return True
-        elif ch in char_diff[1]:
+        elif ch in zhcdicts['TRADONLY']:
             return False
     return None
 
