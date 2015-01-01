@@ -64,8 +64,8 @@ def loaddict(filename=DICTIONARY):
         return
     _curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     abs_path = os.path.join(_curpath, filename)
-    with open(abs_path, 'r') as f:
-        zhcdicts = json.load(f)
+    with open(abs_path, 'rb') as f:
+        zhcdicts = json.loads(f.read().decode('utf-8'))
     zhcdicts['SIMPONLY'] = frozenset(zhcdicts['SIMPONLY'])
     zhcdicts['TRADONLY'] = frozenset(zhcdicts['TRADONLY'])
 
