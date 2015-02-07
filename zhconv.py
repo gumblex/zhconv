@@ -43,7 +43,6 @@ Locales = {
 }
 
 DICTIONARY = "zhcdict.json"
-CHARDIFF = "chardiff.txt"
 
 zhcdicts = None
 dict_zhcn = None
