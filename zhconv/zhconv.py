@@ -399,7 +399,8 @@ def main():
         locale = sys.argv[2]
         convertfunc = convert_for_mw
     else:
-        print("usage: %s [-w] {zh-cn|zh-tw|zh-hk|zh-sg|zh-hans|zh-hant|zh} < input > output" % __file__)
+        thisfile = __file__ if __name__ == '__main__' else 'python -mzhconv'
+        print("usage: %s [-w] {zh-cn|zh-tw|zh-hk|zh-sg|zh-hans|zh-hant|zh} < input > output" % thisfile)
         sys.exit(1)
 
     loaddict()
