@@ -10,7 +10,7 @@ setup(
     author='Dingyuan Wang',
     author_email='abcdoyle888@gmail.com',
     packages=['zhconv'],
-    include_package_data=True,
+    package_data={'zhconv':['*.json']},
     platforms='any',
     classifiers=[
         'Development Status :: 4 - Beta',
