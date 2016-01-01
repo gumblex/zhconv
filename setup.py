@@ -6,7 +6,7 @@ except ImportError:
 setup(
     name='zhconv',
     version='1.1.1',
-    description="A simple implementation of Chinese S-T conversion.",
+    description="A simple implementation of Simplified-Traditional Chinese conversion.",
     author='Dingyuan Wang',
     author_email='abcdoyle888@gmail.com',
     packages=['zhconv'],
