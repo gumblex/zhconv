@@ -279,9 +279,6 @@ def convert_for_mw(s, locale, update=None):
     >>> print(convert_for_mw('張國榮曾在英國-{zh:利兹;zh-hans:利兹;zh-hk:列斯;zh-tw:里茲}-大学學習。', 'zh-sg'))
     张国荣曾在英国利兹大学学习。
     """
-    zhdict = getdict(locale)
-    pfset = pfsdict[locale]
-    pos = 0
     ch = []
     rules = []
     ruledict = update.copy() if update else {}
