@@ -121,24 +121,39 @@ def getpfset(convdict):
             pfset.append(word[:ch+1])
     return frozenset(pfset)
 
-def issimp(s):
+def issimp(s, full=False):
     """
     Detect text is whether Simplified Chinese or Traditional Chinese.
     Returns True for Simplified; False for Traditional; None for unknown.
-    It returns once first simplified- or traditional-only character is
-    encountered, so it's for quick and rough identification.
+    If full=False, it returns once first simplified- or traditional-only
+    character is encountered, so it's for quick and rough identification;
+    else, it compares the count and returns the most likely one.
     Use `is` (True/False/None) to check the result.
 
     `s` must be unicode (Python 2) or str (Python 3), or you'll get None.
     """
     if zhcdicts is None:
         loaddict(DICTIONARY)
-    for ch in s:
-        if ch in zhcdicts['SIMPONLY']:
+    simp, trad = 0, 0
+    if full:
+        for ch in s:
+            if ch in zhcdicts['SIMPONLY']:
+                simp += 1
+            elif ch in zhcdicts['TRADONLY']:
+                trad += 1
+        if simp > trad:
             return True
-        elif ch in zhcdicts['TRADONLY']:
+        elif simp < trad:
             return False
-    return None
+        else:
+            return None
+    else:
+        for ch in s:
+            if ch in zhcdicts['SIMPONLY']:
+                return True
+            elif ch in zhcdicts['TRADONLY']:
+                return False
+        return None
 
 def fallback(locale, mapping):
     for l in Locales[locale]:
