@@ -51,7 +51,7 @@ dict_zhtw = None
 dict_zhhk = None
 pfsdict = {}
 
-RE_langconv = re.compile(r'(-\{.*?\}-)')
+RE_langconv = re.compile(r'(-\{.*?\}-)', re.S)
 RE_splitflag = re.compile(r'\s*\|\s*')
 RE_splitmap = re.compile(r'\s*;\s*')
 RE_splituni = re.compile(r'\s*=>\s*')
