@@ -5,7 +5,7 @@ except ImportError:
 
 setup(
     name='zhconv',
-    version='1.1.1',
+    version='1.2.0',
     description="A simple implementation of Simplified-Traditional Chinese conversion.",
     author='Dingyuan Wang',
     author_email='abcdoyle888@gmail.com',
