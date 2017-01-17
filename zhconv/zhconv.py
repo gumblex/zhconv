@@ -22,7 +22,7 @@ Support MediaWiki's convertion format:
 
 """
 # Only Python3 can pass the doctest here due to unicode problems.
-__version__ = '1.2.0'
+__version__ = '1.2.2'
 
 import os
 import sys
@@ -58,6 +58,9 @@ RE_splituni = re.compile(r'\s*=>\s*')
 RE_splitpair = re.compile(r'\s*:\s*')
 
 def loaddict(filename=DICTIONARY):
+    """
+    Load the dictionary from a specific JSON file.
+    """
     global zhcdicts
     if zhcdicts:
         return
@@ -223,11 +226,12 @@ def tokenize(s, locale, update=None):
 def convert(s, locale, update=None):
     """
     Main convert function.
-    `s` must be unicode (Python 2) or str (Python 3).
-    `locale` should be one of ('zh-hans', 'zh-hant', 'zh-cn', 'zh-sg'
-                               'zh-tw', 'zh-hk', 'zh-my', 'zh-mo').
-    `update` is a dict which updates the conversion table,
-             eg. {'from1': 'to1', 'from2': 'to2'}
+
+    :param s: must be `unicode` (Python 2) or `str` (Python 3).
+    :param locale: should be one of ``('zh-hans', 'zh-hant', 'zh-cn', 'zh-sg'
+                               'zh-tw', 'zh-hk', 'zh-my', 'zh-mo')``.
+    :param update: a dict which updates the conversion table, eg.
+        ``{'from1': 'to1', 'from2': 'to2'}``
 
     >>> print(convert('我幹什麼不干你事。', 'zh-cn'))
     我干什么不干你事。
@@ -282,7 +286,7 @@ def convert_for_mw(s, locale, update=None):
     Use locale='zh' for no conversion.
 
     Reference: (all tests passed)
-    https://zh.wikipedia.org/wiki/Help:%E9%AB%98%E7%BA%A7%E5%AD%97%E8%AF%8D%E8%BD%AC%E6%8D%A2%E8%AF%AD%E6%B3%95
+    https://zh.wikipedia.org/wiki/Help:高级字词转换语法
     https://www.mediawiki.org/wiki/Writing_systems/Syntax
 
     >>> print(convert_for_mw('在现代，机械计算-{}-机的应用已经完全被电子计算-{}-机所取代', 'zh-hk'))
@@ -405,7 +409,7 @@ def convert_for_mw(s, locale, update=None):
         ch.append(convert_for_mw(block + '}-'*nested, locale, ruledict))
     return ''.join(ch)
 
-def _mwtest(locale, update=None):
+def test_convert_mw(locale, update=None):
     s = ('英國-{zh:利兹;zh-hans:利兹;zh-hk:列斯;zh-tw:里茲}-大学\n'
         '-{zh-hans:计算机; zh-hant:電腦;}-\n'
         '-{H|巨集=>zh-cn:宏;}-\n'

@@ -1,9 +1,8 @@
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+.. zhconv documentation master file, created by
+   sphinx-quickstart on Tue Jan 17 19:18:49 2017.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-LONGDESC = '''
 简易中文简繁转换
 ==================================
 
@@ -41,37 +40,32 @@ LONGDESC = '''
 
 和其他 `高级字词转换语法 <https://zh.wikipedia.org/wiki/Help:%E9%AB%98%E7%BA%A7%E5%AD%97%E8%AF%8D%E8%BD%AC%E6%8D%A2%E8%AF%AD%E6%B3%95>`_。
 
+转换字典
+--------
+
+用 :func:`loaddict` 手动载入词典。
+
+转换字典可下载 `MediaWiki 源码包 <https://www.mediawiki.org/wiki/Download)中的 includes/ZhConversion.php>`_，使用 ``convmwdict.py`` 可转换成 json 格式。
+
+.. note::
+   ``zhcdict.json`` 中的词汇表是人工校对的，重新生成会略有不同，使用自带的即可。
+
 命令行工具
 ----------
 
 ::
 
    python -mzhconv [-w] {zh-cn|zh-tw|zh-hk|zh-sg|zh-hans|zh-hant|zh} < input > output
-'''
 
-setup(
-    name='zhconv',
-    version='1.2.2',
-    description="A simple implementation of Simplified-Traditional Chinese conversion.",
-    long_description=LONGDESC,
-    author='Dingyuan Wang',
-    author_email='abcdoyle888@gmail.com',
-    license='MIT',
-    packages=['zhconv'],
-    package_data={'zhconv': ['*.json']},
-    platforms='any',
-    keywords='chinese conversion',
-    classifiers=[
-        'Development Status :: 4 - Beta',
-        'Intended Audience :: Developers',
-        'Topic :: Text Processing :: Linguistic',
-        'License :: OSI Approved :: MIT License',
-        'Natural Language :: Chinese (Simplified)',
-        'Natural Language :: Chinese (Traditional)',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 3",
-    ],
-    url='https://github.com/gumblex/zhconv'
-)
+
+目录索引
+--------
+
+.. toctree::
+   :maxdepth: 2
+
+   api
+
+* :ref:`genindex`
+* :ref:`search`
+
