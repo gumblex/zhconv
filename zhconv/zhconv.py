@@ -309,6 +309,8 @@ def convert_for_mw(s, locale, update=None):
     報頭的「參攷消息」四字摘自魯迅筆跡，「攷」是「考」的異體字，讀音kǎo，與「考」字相同。
     >>> print(convert_for_mw('报头的“-{參攷消息}-”四字摘自鲁迅笔迹-{zh-hans:，“-{參}-”是“-{参}-”的繁体字，读音cān，与简体的“-{参}-”字相同；;zh-hant:，;}-“-{攷}-”是“考”的异体字，读音kǎo，与“考”字相同。', 'zh-cn'))
     报头的“參攷消息”四字摘自鲁迅笔迹，“參”是“参”的繁体字，读音cān，与简体的“参”字相同；“攷”是“考”的异体字，读音kǎo，与“考”字相同。
+    >>> print(convert_for_mw('{{Col-break}}--&gt;', 'zh-hant'))
+    {{Col-break}}--&gt;
     """
     ch = []
     rules = []
@@ -320,6 +322,10 @@ def convert_for_mw(s, locale, update=None):
             nested += 1
             block += frag
         elif frag == '}-':
+            if not nested:
+                # bogus }-
+                ch.append(frag)
+                continue
             block += frag
             nested -= 1
             if nested:
