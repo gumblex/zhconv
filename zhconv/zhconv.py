@@ -61,12 +61,13 @@ def loaddict(filename=DICTIONARY):
     """
     Load the dictionary from a specific JSON file.
     """
+
+    from pkg_resources import resource_stream
     global zhcdicts
     if zhcdicts:
         return
-    _curpath = os.path.normpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-    abs_path = os.path.join(_curpath, filename)
-    with open(abs_path, 'rb') as f:
+
+    with resource_stream(__name__, filename) as f:
         zhcdicts = json.loads(f.read().decode('utf-8'))
     zhcdicts['SIMPONLY'] = frozenset(zhcdicts['SIMPONLY'])
     zhcdicts['TRADONLY'] = frozenset(zhcdicts['TRADONLY'])
@@ -167,7 +168,7 @@ def fallback(locale, mapping):
 def convtable2dict(convtable, locale, update=None):
     """
     Convert a list of conversion dict to a dict for a certain locale.
-    
+
     >>> sorted(convtable2dict([{'zh-hk': '列斯', 'zh-hans': '利兹', 'zh': '利兹', 'zh-tw': '里茲'}, {':uni': '巨集', 'zh-cn': '宏'}], 'zh-cn').items())
     [('列斯', '利兹'), ('利兹', '利兹'), ('巨集', '宏'), ('里茲', '利兹')]
     """
