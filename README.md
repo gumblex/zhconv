@@ -47,3 +47,5 @@ __注意__：`zhcdict.json` 中的词汇表是人工校对的，重新生成会�
 # ls dist
 zhconv-1.2.2-py2.7.egg
 ```
+
+如果在本地，则可以直接执行`sys.path.append('PATH_TO_ZHCONV/zhconv-1.2.2-py2.7.egg')`后使用。

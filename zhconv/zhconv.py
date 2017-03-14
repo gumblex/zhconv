@@ -62,11 +62,12 @@ def loaddict(filename=DICTIONARY):
     Load the dictionary from a specific JSON file.
     """
 
-    from pkg_resources import resource_filename
+    from pkg_resources import resource_stream
     global zhcdicts
     if zhcdicts:
         return
-    with open(resource_filename(__name__, filename), 'rb') as f:
+
+    with resource_stream(__name__, filename) as f:
         zhcdicts = json.loads(f.read().decode('utf-8'))
     zhcdicts['SIMPONLY'] = frozenset(zhcdicts['SIMPONLY'])
     zhcdicts['TRADONLY'] = frozenset(zhcdicts['TRADONLY'])
