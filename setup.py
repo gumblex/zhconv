@@ -52,7 +52,7 @@ LONGDESC = '''
 
 setup(
     name='zhconv',
-    version='1.2.2',
+    version='1.3.0',
     description="A simple implementation of Simplified-Traditional Chinese conversion.",
     long_description=LONGDESC,
     author='Dingyuan Wang',

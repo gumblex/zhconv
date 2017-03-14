@@ -29,6 +29,13 @@ import sys
 import re
 import json
 
+try:
+    from pkg_resources import resource_stream
+    get_module_res = lambda *res: resource_stream(__name__, os.path.join(*res))
+except ImportError:
+    get_module_res = lambda *res: open(os.path.normpath(
+        os.path.join(os.getcwd(), os.path.dirname(__file__), *res)), 'rb')
+
 # Locale fallback order lookup dictionary
 Locales = {
     'zh-cn': ('zh-cn', 'zh-hans', 'zh-sg', 'zh'),
@@ -42,7 +49,8 @@ Locales = {
     'zh': ('zh',) # special value for no conversion
 }
 
-DICTIONARY = "zhcdict.json"
+_DEFAULT_DICT = "zhcdict.json"
+DICTIONARY = _DEFAULT_DICT
 
 zhcdicts = None
 dict_zhcn = None
@@ -61,14 +69,14 @@ def loaddict(filename=DICTIONARY):
     """
     Load the dictionary from a specific JSON file.
     """
-
-    from pkg_resources import resource_stream
     global zhcdicts
     if zhcdicts:
         return
-
-    with resource_stream(__name__, filename) as f:
-        zhcdicts = json.loads(f.read().decode('utf-8'))
+    if filename == _DEFAULT_DICT:
+        zhcdicts = json.loads(get_module_res(filename).read().decode('utf-8'))
+    else:
+        with open(filename, 'rb') as f:
+            zhcdicts = json.loads(f.read().decode('utf-8'))
     zhcdicts['SIMPONLY'] = frozenset(zhcdicts['SIMPONLY'])
     zhcdicts['TRADONLY'] = frozenset(zhcdicts['TRADONLY'])
 
