@@ -27,7 +27,6 @@ def main():
         sys.exit(1)
     je = json.JSONEncoder(ensure_ascii=False, indent=0, separators=(',', ': '), sort_keys=True)
     zhdict = json.load(open('zhcdict.json', 'r'))
-    #SIMPONLY, TRADONLY = set(zhdict['SIMPONLY']), set(zhdict['TRADONLY'])
     SIMPONLY, TRADONLY = set(), set()
     for dic in files:
         target, filename = dic.split('=')
@@ -44,9 +43,12 @@ def main():
     overlapped = SIMPONLY.intersection(TRADONLY)
     zhdict['SIMPONLY'] = ''.join(sorted(SIMPONLY.difference(overlapped)))
     zhdict['TRADONLY'] = ''.join(sorted(TRADONLY.difference(overlapped)))
+    for target in DICTS.difference(zhdict.keys()):
+        zhdict[target] = {}
     with open('zhcdict.json', 'wb') as f:
         for chunk in je.iterencode(zhdict):
             f.write(chunk.encode('utf-8'))
+        f.write(b'\n')
 
 if __name__ == '__main__':
     main()

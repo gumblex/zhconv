@@ -13,7 +13,7 @@ LONGDESC = '''
 * ``zh-cn`` 大陆简体
 * ``zh-tw`` 台灣正體
 * ``zh-hk`` 香港繁體
-* ``zh-sg`` 马新简体
+* ``zh-sg`` 马新简体（无词汇表，需要手工指定）
 * ``zh-hans`` 简体
 * ``zh-hant`` 繁體
 
@@ -52,7 +52,7 @@ LONGDESC = '''
 
 setup(
     name='zhconv',
-    version='1.3.2',
+    version='1.4.0',
     description="A simple implementation of Simplified-Traditional Chinese conversion.",
     long_description=LONGDESC,
     author='Dingyuan Wang',
