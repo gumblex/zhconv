@@ -1,6 +1,8 @@
 简易中文简繁转换
 ===============
 
+[文档](https://pythonhosted.org/zhconv/)
+
 **zhconv** 提供基于 MediaWiki 和 OpenCC 词汇表的最大正向匹配简繁转换，支持地区词转换：zh-cn, zh-tw, zh-hk, zh-sg, zh-hans, zh-hant。Python 2、3通用。
 
 若要求高精确度，参见 [OpenCC](https://github.com/BYVoid/OpenCC) 和 [opencc-python](https://pypi.python.org/pypi/opencc-python)。
@@ -11,6 +13,8 @@
 >>> print(convert(u'人体内存在很多微生物', 'zh-tw'))
 人體內存在很多微生物
 ```
+
+其中，zh-hans, zh-hant 仅转换简繁，不转换地区词。
 
 完整支持 MediaWiki 人工转换语法：
 
@@ -45,3 +49,26 @@ zhconv-1.2.2-py2.7.egg
 ```
 
 如果在本地，则可以直接执行`sys.path.append('PATH_TO_ZHCONV/zhconv-1.2.2-py2.7.egg')`后使用。
+
+
+---
+
+Simple Chinese Conversion Library
+=================================
+
+**zhconv** converts between Simplified and Traditional Chinese using maximum forward matching. The conversion table is based on MediaWiki and OpenCC. Supports regional vocabulary: zh-cn, zh-tw, zh-hk, zh-sg, zh-hans, zh-hant. Supports both Python 2 and 3.
+
+Example:
+
+```pycon
+>>> print(convert(u'我幹什麼不干你事。', 'zh-cn'))
+我干什么不干你事。
+>>> print(convert(u'人体内存在很多微生物', 'zh-tw'))
+人體內存在很多微生物
+```
+
+If zh-hans or zh-hant is used, then regional vocabulary conversion will be disabled.
+
+[Documentation](https://pythonhosted.org/zhconv/) is available in Chinese.
+
+
