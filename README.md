@@ -52,7 +52,7 @@ zhconv-1.2.2-py2.7.egg
 
 ### 小工具
 
-EPUB 电子书简繁转换：`python3` [epubzhconv.py](https://raw.githubusercontent.com/The-Orizon/nlputils/master/epubzhconv.py) `输入.epub 输出.epub zh-{cn,tw}`
+EPUB 电子书简繁转换：`python3` [epubzhconv.py](https://github.com/The-Orizon/nlputils/blob/master/epubzhconv.py) `输入.epub 输出.epub zh-{cn,tw}`
 
 ---
 
