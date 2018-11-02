@@ -50,6 +50,9 @@ zhconv-1.2.2-py2.7.egg
 
 如果在本地，则可以直接执行`sys.path.append('PATH_TO_ZHCONV/zhconv-1.2.2-py2.7.egg')`后使用。
 
+### 小工具
+
+EPUB 电子书简繁转换：`python3 [epubzhconv.py](https://raw.githubusercontent.com/The-Orizon/nlputils/master/epubzhconv.py) 输入.epub 输出.epub zh-{cn,tw}`
 
 ---
 
