@@ -33,7 +33,7 @@
 
 转换字典可下载 [MediaWiki 源码包](https://www.mediawiki.org/wiki/Download)中的 includes/ZhConversion.php，使用 convmwdict.py 可转换成 json 格式。
 
-授权协议采用 MIT 协议。
+代码授权协议采用 MIT 协议；转换表由于来自 MediaWiki，为 GPLv2+ 协议。
 
 
 ### 在Spark集群中使用该项目
@@ -74,4 +74,4 @@ If zh-hans or zh-hant is used, then regional vocabulary conversion will be disab
 
 [Documentation](https://pythonhosted.org/zhconv/) is available in Chinese.
 
-
+The code is licensed under MIT, while the conversion table is licensed under GPLv2+.

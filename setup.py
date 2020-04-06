@@ -52,12 +52,12 @@ LONGDESC = '''
 
 setup(
     name='zhconv',
-    version='1.4.0',
+    version='1.4.1',
     description="A simple implementation of Simplified-Traditional Chinese conversion.",
     long_description=LONGDESC,
     author='Dingyuan Wang',
     author_email='abcdoyle888@gmail.com',
-    license='MIT',
+    license='GPLv2+',
     packages=['zhconv'],
     package_data={'zhconv': ['*.json']},
     platforms='any',
@@ -66,7 +66,7 @@ setup(
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Topic :: Text Processing :: Linguistic',
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
         'Natural Language :: Chinese (Simplified)',
         'Natural Language :: Chinese (Traditional)',
         'Operating System :: OS Independent',
