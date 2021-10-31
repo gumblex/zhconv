@@ -22,7 +22,7 @@ Support MediaWiki's convertion format:
 
 """
 # Only Python3 can pass the doctest here due to unicode problems.
-__version__ = '1.4.1'
+__version__ = '1.4.2'
 
 import os
 import sys
